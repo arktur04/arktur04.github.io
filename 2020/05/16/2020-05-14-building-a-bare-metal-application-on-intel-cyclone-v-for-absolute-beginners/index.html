@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+
+  
+  <title>Building a Bare-Metal Application on Intel Cyclone V for Absolute Beginners | Low Level Notice</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="Building a Bare-Metal Application on Intel Cyclone V for Absolute BeginnersSetting up Linux on the development board like SocKit with a double-core ARM Cortex A9 is not rocket science. A manufacturer">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Building a Bare-Metal Application on Intel Cyclone V for Absolute Beginners">
+<meta property="og:url" content="http://arktur04.github.io/2020/05/16/2020-05-14-building-a-bare-metal-application-on-intel-cyclone-v-for-absolute-beginners/index.html">
+<meta property="og:site_name" content="Low Level Notice">
+<meta property="og:description" content="Building a Bare-Metal Application on Intel Cyclone V for Absolute BeginnersSetting up Linux on the development board like SocKit with a double-core ARM Cortex A9 is not rocket science. A manufacturer">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://arktur04.github.io/2020/05/16/2020-05-14-building-a-bare-metal-application-on-intel-cyclone-v-for-absolute-beginners/x5twrba2tlvz68fuwltzjsak2ds.jpeg">
+<meta property="og:image" content="http://arktur04.github.io/2020/05/16/2020-05-14-building-a-bare-metal-application-on-intel-cyclone-v-for-absolute-beginners/108519_original.png">
+<meta property="article:published_time" content="2020-05-16T05:55:18.000Z">
+<meta property="article:modified_time" content="2020-05-16T15:31:23.166Z">
+<meta property="article:author" content="VT">
+<meta property="article:tag" content="programming">
+<meta property="article:tag" content="embedded">
+<meta property="article:tag" content="cyclone v">
+<meta property="article:tag" content="baremetal">
+<meta property="article:tag" content="c">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://arktur04.github.io/2020/05/16/2020-05-14-building-a-bare-metal-application-on-intel-cyclone-v-for-absolute-beginners/x5twrba2tlvz68fuwltzjsak2ds.jpeg">
+  
+    <link rel="alternate" href="/atom.xml" title="Low Level Notice" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 4.2.1"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Low Level Notice</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://arktur04.github.io"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-2020-05-14-building-a-bare-metal-application-on-intel-cyclone-v-for-absolute-beginners" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2020/05/16/2020-05-14-building-a-bare-metal-application-on-intel-cyclone-v-for-absolute-beginners/" class="article-date">
+  <time datetime="2020-05-16T05:55:18.000Z" itemprop="datePublished">2020-05-16</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/embedded-programming/">embedded programming</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Building a Bare-Metal Application on Intel Cyclone V for Absolute Beginners
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="Building-a-Bare-Metal-Application-on-Intel-Cyclone-V-for-Absolute-Beginners"><a href="#Building-a-Bare-Metal-Application-on-Intel-Cyclone-V-for-Absolute-Beginners" class="headerlink" title="Building a Bare-Metal Application on Intel Cyclone V for Absolute Beginners"></a>Building a Bare-Metal Application on Intel Cyclone V for Absolute Beginners</h3><p>Setting up Linux on the development board like SocKit with a double-core ARM Cortex A9 is not rocket science. A manufacturer of the board supports the ready-to-use image, appropriate for installing on SD card or another media. But what if you are craving to touch bare metal, approaching a neck-breaking speed of code not restrained by an OS core? Well, it is possible, but not so easy and obvious. In this short essay, I’ll give you step-by-step instruction, how to build and run you first bare-metal application on Cyclone V SoC, that uses ARM Cortex A9 core of the HPS subsystem of the SoC.</p>
+<p>You need to have the development board with Intel (Altera) Cyclone V SoC. I used SoCKit board:</p>
+<img src="/2020/05/16/2020-05-14-building-a-bare-metal-application-on-intel-cyclone-v-for-absolute-beginners/x5twrba2tlvz68fuwltzjsak2ds.jpeg" class="">
+
+<a id="more"></a>
+
+<p>I’ve been doing all the things described in this article in Debian Jessie. You can use other Linux system or Windows with corresponding changes.</p>
+<p>And you need DS-5 IDE. And, unfortunately, free edition doesn’t allow you to compile a bare-metal code. You need the full version.</p>
+<h3 id="1-Preparation"><a href="#1-Preparation" class="headerlink" title="1. Preparation"></a>1. Preparation</h3><p>1.1. Despite you have the full version of DS-5, you need to install the free DS-5 Altera Edition. Both versions must be installed in the sudo mode, in different directories, for example: <em>/home/user/intelFPGA</em> for DS-5 Altera Edition, and <em>/home/user/DS-5</em> for the full version of DS-5. You should enter paths by hand during the installation process.</p>
+<h3 id="2-Running-IDE"><a href="#2-Running-IDE" class="headerlink" title="2. Running IDE"></a>2. Running IDE</h3><p>2.1. Firstly, run the script <em>/home/user/intelFPGA/16.1/embedded/embedded_command_shell.sh</em>, then change a directory to <em>/home/user/DS-5/bin</em> and run IDE:</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ ./eclipse &amp;</span><br></pre></td></tr></table></figure>
+<p>The script set environment variables. To set the variables when a system starts you should add the following line to the file <em>/home/user/.profile</em>:</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">QUARTUS_ROOTDIR=/home/user/intelFPGA/16.1/qprogrammer <span class="built_in">export</span> PATH=<span class="variable">$PATH</span>:/usr/<span class="built_in">local</span>/gcc-arm-none-eabi-5_4-2016q3/bin/:/home/user/intelFPGA/16.1/embedded/host_tools/mentor/gnu/arm/baremetal/bin/</span><br></pre></td></tr></table></figure>
+<p>If it is necessary, add a similar line for otter required variables, such as QSYS_ROOTDIR.</p>
+<p>Also, you need to install and run Quartus Prime. Let’s consider, that the installation directory of Quartus is <em>/home/user/intelFPGA/16.1/quartus/</em>.</p>
+<p>Run Quartus Prime, that is located at <em>/home/user/intelFPGA/16.1/quartus/bin/quartus</em>, and it’s JTAG programmer utility, located at <em>/home/user/intelFPGA/16.1/qprogrammer/bin/quartus_pgmw</em>.</p>
+<h3 id="3-Connecting-the-SoCkit"><a href="#3-Connecting-the-SoCkit" class="headerlink" title="3. Connecting the SoCkit"></a>3. Connecting the SoCkit</h3><p>3.1. Connect the SoCkit board to a computer. Connect microUSB cables to the ports of the board, named “USB Blaster (JTAG)” and “USB to UART”.</p>
+<p>3.2. Switch the board on and enter:</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ ls /dev/bus/usb/001</span><br><span class="line"> 001  002  003</span><br></pre></td></tr></table></figure>
+<p>The last number (003) is an JTAG interface. Set permissions to writing:</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ sudo chmod 666 /dev/bus/usb/001/003</span><br></pre></td></tr></table></figure>
+<p>You have to do it every time you turn on the board.</p>
+<p>3.3. Setting the TTY terminal<br>You can use this command:</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">screen /dev/ttyUSB0 115200</span><br></pre></td></tr></table></figure>
+<h3 id="4-Building-the-preloader-u-boot-spl"><a href="#4-Building-the-preloader-u-boot-spl" class="headerlink" title="4. Building the preloader (u-boot-spl)"></a>4. Building the preloader (u-boot-spl)</h3><p>4.1. Download the file <em>sockit_ghrd_16.0.tar.gz</em> and unpack it. For example, unpack it to <em>/home/user/ghrd-16/sockit_ghrd</em>.</p>
+<p>4.2. Run Quartus Prime and open file <em>/home/user/ghrd-16/sockit_ghrd/soc_system.qpf</em>.</p>
+<p>4.3. Run Qsys (Tools/Qsys). Open file <em>/home/user/ghrd-16/sockit_ghrd/soc_system.qsys</em>. Do <em>Generate/Generate HDL</em> and quit Qsys.</p>
+<p>4.4. Run Assembler in Quartus Prime.</p>
+<p>4.5. Run bsp-editor: <em>/home/user/intelFPGA/16.1/embedded/host_tools/altera/preloadergen/bsp-editor</em>. Create a new project: <em>File/New HPS BSP</em>. In the field “<em>Preloader setting directory</em>“ write “<em>/home/user/ghrd-16/sockit_ghrd/hps_isw_handoff/soc_system_hps_0</em>“.</p>
+<p>4.6. Set up the Preloader. Go to the tab <em>Advanced</em>. Switch <em>Watchdog_enable</em> off. If you want to see debug messages through JTAG, you can switch on <em>Semihosting</em>. After this press <em>Generate</em> and quit.</p>
+<p>4.7. It’s possible to change the startup message. For example, in the file <em>software/spl_bsp/uboot-socfpga/board/altera/socfpga/socfpga_cyclone5.c</em> change the string “<em>BOARD: Altera SOCFPGA Cyclone V Board</em>“ on another:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment"> * Print Board information</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">checkboard</span><span class="params">(<span class="keyword">void</span>)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line"><span class="meta">#<span class="meta-keyword">ifdef</span> CONFIG_SOCFPGA_VIRTUAL_TARGET</span></span><br><span class="line"> <span class="built_in">puts</span>(<span class="string">"BOARD : Altera VTDEV5XS1 Virtual Board\n"</span>);</span><br><span class="line"><span class="meta">#<span class="meta-keyword">else</span></span></span><br><span class="line"> <span class="comment">//puts("BOARD : Altera SOCFPGA Cyclone V Board\n");</span></span><br><span class="line"> <span class="built_in">puts</span>(<span class="string">"ARM preloader build by 32-bit.me\n"</span>);</span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></span><br><span class="line"> <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>4.8. The environment variable SOCEDS_DEST_ROOT must be set to <em>/home/user/intelFPGA/16.1/embedded</em>:</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">export</span> SOCEDS_DEST_ROOT=/home/user/intelFPGA/16.1/embedded</span><br></pre></td></tr></table></figure>
+<p>Now go to the directory <em>/home/user/ghrd-16/sockit_ghrd/software/spl_bsp</em> and do make. Make can fail with an error “<em>make: mkpimage: Command not found</em>“, but it should build the <em>u-boot-spl</em> file in the path <em>/home/user/ghrd-16/sockit_ghrd/software/spl_bsp/uboot-socfpga/spl/u-boot-spl</em>.</p>
+<p>4.9. Testing the preloader</p>
+<p>4.9.1. You don’t need an FPGA image (which has a “.sof” extension) for running the preloader. Run DS-5, and open “<em>Run/Debug configurations</em>“.</p>
+<p>4.9.2. In the field Connection should be set the CV SoCKit 1-1 option. If it’s not so, press “<em>Browse</em>“ button and set this option. If an error appears, do 3.1-3.2.</p>
+<p>4.9.3. Set the file u-boot-spl on the Files tab, in the “<em>Application on host to download</em>“ field: <em>/home/user/ghrd-16/sockit_ghrd/software/spl_bsp/uboot-socfpga/spl/u-boot-spl</em>. Set the flag “<em>Load symbols</em>“. Remain the “<em>Files</em>“ field empty.</p>
+<p>4.9.4. Switch off a debugging script launching on the Debugging tab.</p>
+<p>4.9.5. Run terminal utility (for example, screen) and press the “<em>Debug</em>“ button. The preloader is loaded into memory and a debugger is ready to launch. Press the “<em>Continue</em>“ button (or F8) and see the message:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">U-Boot SPL 2013.01.01 (Jun 24 2017 - 19:49:33)</span><br><span class="line">ARM preloader build by 32-bit.me</span><br><span class="line">CLOCK: EOSC1 clock 25000 KHz</span><br><span class="line">CLOCK: EOSC2 clock 25000 KHz</span><br><span class="line">CLOCK: F2S_SDR_REF clock 0 KHz</span><br><span class="line">CLOCK: F2S_PER_REF clock 0 KHz</span><br><span class="line">CLOCK: MPU clock 925 MHz</span><br><span class="line">CLOCK: DDR clock 400 MHz</span><br><span class="line">CLOCK: UART clock 100000 KHz</span><br><span class="line">CLOCK: MMC clock 50000 KHz</span><br><span class="line">CLOCK: QSPI clock 370000 KHz</span><br><span class="line">RESET: COLD</span><br><span class="line">SDRAM: Initializing MMR registers</span><br><span class="line">SDRAM: Calibrating PHY</span><br><span class="line">SEQ.C: Preparing to start memory calibration</span><br><span class="line">SEQ.C: CALIBRATION PASSED</span><br><span class="line">SDRAM: 1024 MiB</span><br><span class="line">ALTERA DWMMC: 0</span><br><span class="line">Card did not respond to voltage select!</span><br><span class="line">spl: mmc init failed: err - -17</span><br><span class="line">### ERROR ### Please RESET the board ###</span><br></pre></td></tr></table></figure>
+<p>It means that the preloader started successfully.</p>
+<p>4.9.6. After debugging session press buttons “<em>Disconnect From Target</em>“ and “<em>Remove Connection</em>“.</p>
+<h3 id="5-Write-“Hello-World”-for-the-bare-metal-mode"><a href="#5-Write-“Hello-World”-for-the-bare-metal-mode" class="headerlink" title="5. Write “Hello World” for the bare-metal mode"></a>5. Write “Hello World” for the bare-metal mode</h3><p>5.1. Download the project <em>ArrowSocKit_BareMetal_GNU.zip</em>. Set environment variables as in 2.1., run DS-5, import the project from the archive (File/Import/Existing Project into Workspace, Select archile file). The unpacked project appears in the directory /home/user/DS-5-Workspace/BareMetalBoot-GNU.</p>
+<p>5.2. You can try to build the project with make, but it can’t be build yet. To build the project, do the following.</p>
+<p>5.3. Copy the directory <em>/home/user/intelFPGA/16.1/embedded/ip/altera/hps/altera_hps/hwlib</em> into <em>/home/user/DS-5-Workspace/</em>. Here are folders src and include, and in each of them there are <em>soc_cv_av</em> and <em>soc_a10 directories</em>. You may remove directories named <em>soc_a10</em>. Then copy files <em>libcs3.a</em>, <em>libcs3arm.a</em>, <em>libcs3unhosted.a</em> from <em>/home/user/intelFPGA/16.1/embedded/host_tools/mentor/gnu/arm/baremetal/arm-altera-eabi/lib</em> to the project directory (<em>/home/user/DS-5-Workspace/BareMetalBoot-GNU</em>). Copy the file <em>arm-names.inc</em> from <em>/home/user/intelFPGA/16.1/embedded/host_tools/mentor/gnu/arm/baremetal/arm-altera-eabi/lib/cortex-a9/</em> to <em>/home/user/DS-5-Workspace/BareMetalBoot-GNU/</em>.</p>
+<p>5.4. In the Makefile change “<em>CROSS_COMPILE := arm-none-eabi-</em>“ to “<em>CROSS_COMPILE := arm-altera-eabi-</em>“. Also change the path to hlib: <em>HWLIBS_ROOT := /home/user/DS-5-Workspace/hwlib</em></p>
+<p>5.5. Now run make. and read all error messages. If make can’t find some symbol, you should find it in directories <em>hwlib/src/soc_cv_av</em> and <em>hwlib/include/soc_cv_av</em>, and make a copy in <em>hwlib/src</em> and <em>hwlib/include</em> correspondingly. After you find all fules, make fails with the error “<em>mkimage: not found</em>“, but it’s not important, because we need only the <em>test.axf</em> file.</p>
+<p>5.6. Running an application</p>
+<p>5.6.1. To run an application it is necessary to load an FPGA image (.sof file), that was generated when we’ve built the preloader. Run the programmer as we did in 2.1. There must be the text “<em>CV SoCKit [1-1]</em>“ to the right of the bottom “<em>Hardware Setup</em>“. If there isn’t, you should set the write permission for the JTAG port (see above) and click the <em>Hardware Setup</em> button.</p>
+<p>5.6.2. Click <em>Auto Detect</em> and select an arbitrary option from a list. You see a configuration of two devices: one is what you’ve selected (for example, 5CSEBA6) and the second is SOCVHPS. Remove the first device: select it and press Delete. Press “<em>Add File</em>“ and open the image file (<em>/home/user/ghrd-16/sockit_ghrd/output_files/soc_system.sof</em>). A new device appeared to the right of SOCVHPS. Move it with a mouse to the first place in the chain. After this, press Start and upload the image.</p>
+<p>5.6.3. In DS-5 open “<em>Debug Configuration</em>“ on the “<em>Files</em>“ tab. Set the file <em>u-boot-spl</em> on the line “<em>Application on host to download</em>“. Remove a mark at “<em>Load Symbols</em>“. Set the file “<em>test.axf</em>“ at the line “<em>Files</em>“. On the Debugger tab check the “<em>Run target initialization debugger script</em>“ and set the script file “<em>debug-unhosted.ds</em>“, located in th project directory. In the file edit the path to the preloader:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"># Load the SPL preloader into memory.</span><br><span class="line">#</span><br><span class="line">loadfile &quot;&#x2F;home&#x2F;user&#x2F;ghrd-16&#x2F;sockit_ghrd&#x2F;software&#x2F;spl_bsp&#x2F;uboot-socfpga&#x2F;spl&#x2F;u-boot-spl&quot; 0x0</span><br></pre></td></tr></table></figure>
+<p>Run the TTY terminal screen and press Debug. Then the preloader will start, an application will be uploaded, and a debugger will be set on a start point of the program. Press “<em>Continue</em>“ button. In a window of a terminal you will see preloader’s output, as was shown above, then the following:</p>
+<p><img src="108519_original.png" alt="output"></p>
+<p>Congratulations! You’ve just run your first bare-metal application on the Cortex-A9 core.</p>
+<p>Link to the repository: <a href="https://github.com/arktur04/cyclone-v-baremetal" target="_blank" rel="noopener">https://github.com/arktur04/cyclone-v-baremetal</a></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://arktur04.github.io/2020/05/16/2020-05-14-building-a-bare-metal-application-on-intel-cyclone-v-for-absolute-beginners/" data-id="ckaavfwzo0000ju6k4qad3b5x" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/baremetal/" rel="tag">baremetal</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/c/" rel="tag">c</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/cyclone-v/" rel="tag">cyclone v</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/embedded/" rel="tag">embedded</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/programming/" rel="tag">programming</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/embedded-programming/">embedded programming</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/baremetal/" rel="tag">baremetal</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/c/" rel="tag">c</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cyclone-v/" rel="tag">cyclone v</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/embedded/" rel="tag">embedded</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/programming/" rel="tag">programming</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/baremetal/" style="font-size: 10px;">baremetal</a> <a href="/tags/c/" style="font-size: 10px;">c</a> <a href="/tags/cyclone-v/" style="font-size: 10px;">cyclone v</a> <a href="/tags/embedded/" style="font-size: 10px;">embedded</a> <a href="/tags/programming/" style="font-size: 10px;">programming</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/05/">May 2020</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2020/05/16/2020-05-14-building-a-bare-metal-application-on-intel-cyclone-v-for-absolute-beginners/">Building a Bare-Metal Application on Intel Cyclone V for Absolute Beginners</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2020 VT<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+
+  
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+  </div>
+</body>
+</html>
